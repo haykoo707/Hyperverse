@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HyperVerse</title>
+  <style>
+    /* Հիմնական զրոյացում և ընդհանուր ոճեր */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: sans-serif;
+      background-color: #000;
+      color: #fff;
+      user-select: none;
+    }
+    .app-container {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid #333;
+      border-right: 1px solid #333;
+    }
+    /* Վերևի հատված */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background: #111;
+      border-bottom: 1px solid #333;
+    }
+    .top-bar button.close-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .top-bar .title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .top-bar .score {
+      font-size: 14px;
+    }
+    .top-bar .score span {
+      color: #22c5f2;
+      font-weight: bold;
+    }
+    /* Tabs */
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      background: #111;
+      border-bottom: 1px solid #333;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 10px;
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .tab-button.active {
+      color: #22c5f2;
+      border-bottom: 3px solid #22c5f2;
+    }
+    /* Բովանդակության կոնտեյներ */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      background: #000;
+      padding: 11px;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    /* Home-ի (Tasks) բաժին */
+    .task-section h2 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .task-item {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.2s;
+    }
+    .task-item:hover {
+      background: #1a1a1a;
+    }
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .task-icon {
+      width: 32px;
+      height: 32px;
+      background: #333;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .task-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .task-title {
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .task-reward {
+      font-size: 12px;
+      color: #22c5f2;
+    }
+    .task-right button {
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+    }
+    .start-btn {
+  color: #000;
+  border-radius: 12px; 
+  background: #f09433;
+  background : -moz-linear-gradient(45deg, #5dc9e7 0%, #22c5f2 25%, #20cfff 50%, #22c5f2 75%, #5dc9e7 100%);
+  background : -webkit-linear-gradient(45deg, #5dc9e7 0%,#22c5f2 25%,#20cfff 50%,#22c5f2 75%,#5dc9e7 100%);
+  background : linear-gradient(45deg, #5dc9e7 0%,#22c5f2 25%,#20cfff 50%,#22c5f2 75%,#5dc9e7 100%);
+}
+
+    .waiting-btn {
+      background: #555;
+      cursor: default;
+      border-radius: 8px;
+
+    }
+    .claim-btn {
+      background: #f59e0b;
+      border-radius: 8px;
+      background : #f09433;
+      background : -moz-linear-gradient(45deg, #5dc9e7 0%, #22c5f2 25%, #20cfff 50%, #22c5f2 75%, #5dc9e7 100%);
+  background : -webkit-linear-gradient(45deg, #5dc9e7 0%,#22c5f2 25%,#20cfff 50%,#22c5f2 75%,#5dc9e7 100%);
+  background : linear-gradient(45deg, #5dc9e7 0%,#22c5f2 25%,#20cfff 50%,#22c5f2 75%,#5dc9e7 100%);
+
+
+    }
+    .claimed-btn {
+      background: #006f8e;
+      opacity: 0.6;
+      cursor: default;
+      border-radius: 8px;
+      
+    }
+    /* Leaderboard և Friends բաժինների ոճավորում */
+    .leaderboard-section h2,
+    .friends-section h2 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    .leaderboard-list,
+    .friends-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .leaderboard-item,
+    .friend-item {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .profile-section {
+      padding: 15px;
+    }
+    .profile-item {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .profile-score {
+      color: #22c5f2;
+      font-weight: bold;
+    }
+    .profile-section {
+      padding: 15px;
+    }
+    .profile-item {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .profile-score {
+      color: #22c5f2;
+      font-weight: bold;
+    }
+    
+    .withdraw-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      background: #555;
+    }
+    .container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #claimBtn {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        #claimBtn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #score {
+            font-size: 24px;
+            margin: 10px;
+        }
+ /* Նոր ավելացված Daily Reward ոճեր */
+ .daily-reward-section {
+      padding: 15px;
+    }
+    .reward-card {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .reward-timer {
+      color: #22c5f2;
+      font-size: 14px;
+      margin: 10px 0;
+    }
+    .reward-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(45deg, #5dc9e7, #22c5f2);
+      border: none;
+      border-radius: 12px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+      transition: opacity 0.3s;
+    }
+    .reward-btn:disabled {
+      background: #555;
+      cursor: not-allowed;
+      color: #888;
+    }
+    .tg-btn{
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      background: #30c8ff;
+    }
+    /* Mining տաբի ոճեր */
+    .mining-container {
+      text-align: center;
+      padding: 20px;
+      top: -600px;
+
+    }
+    
+    .click-counter {
+      font-size: 24px;
+      color: #000000;
+      margin: 20px 0;
+      position: relative;
+      top: -600px;
+    }
+    
+    .mining-area {
+      width: 200px;
+      height: 200px;
+      background: #494949;
+      border: 2px solid #686868;
+      border-radius: 100px;
+      margin: 20px auto;
+      cursor: pointer;
+      transition: transform 0.5s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      top: -780px;
+      box-shadow: 0 0 88px #30c8ff
+      
+
+    }
+    
+    .mining-area:active {
+      transform: scale(0.95);
+      background: #000000;
+      position: relative;
+      top: -780px;
+    }
+    .click-counter {
+      font-size: 24px;
+      color: #000000;
+      margin: 20px 0;
+    }
+.sp-btn{
+       width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      background: #00bbff;
+}
+.hpsup-btn{
+  width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      background: #00bbff;
+}
+#boostButton {
+    background-color: #ffcc00;
+    border: none;
+    color: black;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 12px;
+      margin: 20px auto;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      top: -400px;
+
+    
+  }
+  #boostButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    margin: 20px auto;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      top: -400px;
+
+  }
+  #progress {
+    height: 20px;
+    background-color: green;
+    width: 0%;
+    transition: width 0.5s;
+    margin: 20px auto;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      top: -400px;
+
+  }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- Վերևի տող -->
+    <div class="top-bar">
+      <div class="title">HyperVerse🪐</div>
+      <div class="score">Your Score: <span id="userScore">0</span></div>
+    </div>
+    <!-- Tabs բաժին -->
+    <div class="tabs">
+      <button class="tab-button active" data-tab="home">Home 🏠 </button>
+      <button class="tab-button" data-tab="daily-reward">Reward🎁</button>
+      <button class="tab-button" data-tab="mine">Mining⛏️</button>
+      <button class="tab-button" data-tab="profile">Profile👤</button>
+      <button class="tab-button" data-tab="airdrop">Airdrop💎</button>
+
+      
+    </div>
+    <!-- Բովանդակության կոնտեյներ -->
+    <div class="content">
+      <!-- Home Tab (Tasks) -->
+      <div id="home" class="tab-content active">
+        <div class="task-section">
+          <h2>Tasks</h2>
+          <div class="task-list" id="taskList">
+            <!-- Tasks ներմուծվում են JS-ով -->
+          </div>
+        </div>
+      </div>
+       <!-- Daily Reward Tab (Նոր բաժին) -->
+  <div id="daily-reward" class="tab-content">
+    <div class="daily-reward-section">
+      <div class="reward-card">
+        <h2>🎁 Daily Reward</h2>
+        <div class="reward-timer" id="rewardTimer">Available now</div>
+        <button 
+          class="reward-btn" 
+          id="claimRewardBtn"
+          onclick="handleDailyClaim()"
+        >
+          Claim +50 Score
+        </button>
+      </div>
+      <p style="color: #666; text-align: center;">
+        Claim your reward every 24 hours!
+      </p>
+    </div>
+  </div>
+      <!-- Friends Tab -->
+      <div id="profile" class="tab-content">
+        <div class="profile-section">
+          <div class="profile-info" id="profileInfo"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+      <!-- Mining տաբի բովանդակություն -->
+      <div id="mine" class="tab-content">
+        <div class="mining-container">
+          <div class="click-counter">
+tap to earn
+             <span id="clicksCounter"></span>
+          </div>
+            <div class="progress" id="progress"></div>
+          </div>
+          <button id="boostButton">Activate Boost ⚡</button>
+
+          <div class="mining-area" id="miningArea">
+            <br>
+            
+           <br>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="airdrop" class="tab-content">
+      <div class="airdrop-section">
+        <div class="airdrop-info" id="airdropInfo"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  <script>
+    // Օգտատիրոջ միավորները (հեռելով սկզբնական արժեքը localStorage-ից, եթե կան)
+    let userScore = 0;
+    // Փոխարինել tasks-ի նախնական արժեքը՝ սահմանելով let, որպեսզի կարողանանք վերագրել, եթե անհրաժեշտ լինի
+    let tasks = [
+    {
+  id: 1,
+  title: 'Join HyperVerse Community', // Նոր վերնագիր
+  link: 'https://t.me/HyperrVersee',
+  reward: 350,
+  status: 'pending',
+  claimAvailable: false,
+  timerId: null,
+  icon: '📢'
+}
+,
+      {
+        id: 2,
+        title: 'Join Another Channel',
+        link: 'https://t.me/someOtherChannel',
+        reward: 200,
+        status: 'pending',
+        claimAvailable: false,
+        timerId: null,
+        icon: '💬'
+      },
+      
+      {
+        id: 3,
+        title: 'Support the project',
+        link: 'payment.html',
+        reward: 100,
+        status: 'pending',
+        claimAvailable: false,
+        timerId: null,
+        icon: '💸'
+      },
+
+
+
+    ];
+
+    // Local Storage - ի համար պահպանումի երկիրը
+    function saveState() {
+      localStorage.setItem('userScore', userScore);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // Local Storage - ից ներբեռնել ցուցակը; 
+    // եթե որևէ task-ի կարգավիճակը "started" է, վերազգուշացնում ենք, քանի որ setTimeout–ը չի պահպանվում
+    function loadState() {
+      const savedScore = localStorage.getItem('userScore');
+      if (savedScore !== null) {
+        userScore = parseInt(savedScore, 10);
+      }
+      const savedTasks = localStorage.getItem('tasks');
+      if (savedTasks !== null) {
+        tasks = JSON.parse(savedTasks);
+        // Վերածարարում ենք բոլոր "started" task-ները "pending" մակարդակի, որպեսզի վերանայում:
+        tasks.forEach(task => {
+          if (task.status === 'started') {
+            task.status = 'pending';
+            task.claimAvailable = false;
+            task.timerId = null;
+          }
+        });
+      }
+    }
+
+    // Tasks ցուցադրումը (Home Tab)
+    function renderTasks() {
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+
+      tasks.forEach(task => {
+        const taskItem = document.createElement('div');
+        taskItem.classList.add('task-item');
+
+        // Ձախ մաս: Icon, Title, Reward
+        const taskLeft = document.createElement('div');
+        taskLeft.classList.add('task-left');
+
+        const iconDiv = document.createElement('div');
+        iconDiv.classList.add('task-icon');
+        iconDiv.textContent = task.icon || '🐕';
+
+        const taskInfo = document.createElement('div');
+        taskInfo.classList.add('task-info');
+
+        const taskTitle = document.createElement('div');
+        taskTitle.classList.add('task-title');
+        taskTitle.textContent = task.title;
+
+        const taskReward = document.createElement('div');
+        taskReward.classList.add('task-reward');
+        taskReward.textContent = `+${task.reward} Score`;
+
+        taskInfo.appendChild(taskTitle);
+        taskInfo.appendChild(taskReward);
+        taskLeft.appendChild(iconDiv);
+        taskLeft.appendChild(taskInfo);
+
+        // Աջ մաս: Գործողության կոճակ
+        const taskRight = document.createElement('div');
+        taskRight.classList.add('task-right');
+        const actionBtn = document.createElement('button');
+
+        if (task.status === 'pending') {
+          actionBtn.textContent = 'Start';
+          actionBtn.classList.add('start-btn');
+          actionBtn.addEventListener('click', () => handleStart(task.id));
+        } else if (task.status === 'started') {
+          if (!task.claimAvailable) {
+            actionBtn.textContent = 'Wait...';
+            actionBtn.classList.add('waiting-btn');
+            actionBtn.disabled = true;
+          } else {
+            actionBtn.textContent = 'Claim';
+            actionBtn.classList.add('claim-btn');
+            actionBtn.addEventListener('click', () => handleClaim(task.id));
+          }
+        } else if (task.status === 'claimed') {
+          actionBtn.textContent = 'Claimed';
+          actionBtn.classList.add('claimed-btn');
+          actionBtn.disabled = true;
+        }
+
+        taskRight.appendChild(actionBtn);
+        taskItem.appendChild(taskLeft);
+        taskItem.appendChild(taskRight);
+        taskList.appendChild(taskItem);
+      });
+    }
+
+    // Leaderboard-ի ցուցադրումը
+    function renderLeaderboard() {
+      const leaderboardList = document.getElementById('leaderboardList');
+      leaderboardList.innerHTML = '';
+
+      leaderboardData.forEach(item => {
+        const row = document.createElement('div');
+        row.classList.add('leaderboard-item');
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = item.username;
+
+        const scoreSpan = document.createElement('span');
+        scoreSpan.textContent = item.score + ' Score';
+
+        row.appendChild(nameSpan);
+        row.appendChild(scoreSpan);
+        leaderboardList.appendChild(row);
+      });
+    }
+
+
+    // Start կոճակի գործողությունը
+    function handleStart(taskId) {
+      const taskIndex = tasks.findIndex(t => t.id === taskId);
+      if (taskIndex === -1) return;
+      const task = tasks[taskIndex];
+
+      // Բանում ենք հղումը նոր պատուհանում
+      window.open(task.link, '_blank');
+
+      // Փոխում ենք իրավիճակը՝ 'started'
+      task.status = 'started';
+      task.claimAvailable = false;
+
+      // Սկսում ենք 20 վայրկյանանոց թայլմա՝ հետո Claim կոճակը կստացվի
+      task.timerId = setTimeout(() => {
+        task.claimAvailable = true;
+        renderTasks();
+        saveState();
+      }, 20000);
+
+      renderTasks();
+      saveState();
+    }
+
+    // Claim կոճակի գործողությունը
+    function handleClaim(taskId) {
+      const taskIndex = tasks.findIndex(t => t.id === taskId);
+      if (taskIndex === -1) return;
+      const task = tasks[taskIndex];
+
+      // Հավաքում ենք միավորները
+      userScore += task.reward;
+      updateScore();
+
+      // Փոխում ենք վիճակը՝ Claim կատարված
+      task.status = 'claimed';
+      task.claimAvailable = false;
+      if (task.timerId) {
+        clearTimeout(task.timerId);
+        task.timerId = null;
+      }
+      renderTasks();
+      saveState();
+    }
+
+    // Միավորների թարմացում
+    function updateScore() {
+      document.getElementById('userScore').textContent = userScore;
+      localStorage.setItem('userScore', userScore);
+    }
+
+    // Tabs փոխման տրամաբանություն
+    function setupTabs() {
+      const tabButtons = document.querySelectorAll('.tab-button');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabContents.forEach(tc => tc.classList.remove('active'));
+
+          const tab = button.getAttribute('data-tab');
+          button.classList.add('active');
+          document.getElementById(tab).classList.add('active');
+        });
+      });
+    }
+
+    // «Close» կոճակի գործողությունը (օրինակային)
+    function setupCloseButton() {
+      }
+
+    // Բոլոր բովանդակության սկզբնավորումը
+    function initApp() {
+      loadState();
+      setupTabs();
+      setupCloseButton();
+      renderTasks();
+      renderLeaderboard();
+      renderFriends();
+      updateScore();
+    }
+
+    document.addEventListener('DOMContentLoaded', initApp);
+
+     // Օգտատիրոջ պրոֆիլի տվյալներ
+     let userProfile = {
+      score: localStorage.getItem("userScore") ? parseInt(localStorage.getItem("userScore")) : 0
+    };
+
+    // Profile բաժնի ցուցադրում
+    function renderProfile() {
+      const profileInfo = document.getElementById('profileInfo');
+      profileInfo.innerHTML = `
+        <h2>Profile👤</h2>
+        <div class="profile-item">
+          <span>General Score:</span>
+          <span class="profile-score">${userProfile.score} Score</span>
+        </div>
+        <button class="withdraw-btn" onclick="withdraw()">Withdraw🔒</button>
+<button class="tg-btn" onclick="window.open('https://t.me/HyperrVersee', '_blank')">Telegram Channel📢</button>
+        <h6>For more Info subscribe Telegram channel</h6>
+        <button class="sp-btn" onclick="window.open('payment.html', '_blank')">Support the project💵</button>
+                <h6>Support the project (SOL) (TON)</h6>
+                        <button class="hpsup-btn" onclick="window.open('LINK', '_blank')">HyperVerse Support📝</button>
+                                        <h6>HyperVerse Support (Telegram)</h6>
+
+
+
+
+
+      `;
+    }
+
+    // Ելքագրման ֆունկցիա (օրինակ)
+    function withdraw() {
+      alert("SOON!");
+    }
+
+     // Օգտատիրոջ պրոֆիլի տվյալներ
+     let userairdrop = {
+      score: localStorage.getItem("userScore") ? parseInt(localStorage.getItem("userScore")) : 0
+    };
+
+    // Profile բաժնի ցուցադրում
+    function renderairdrop() {
+      const airdropInfo = document.getElementById('airdropInfo');
+      airdropInfo.innerHTML = `
+        <h2>Airdrop</h2>
+        <div class="airdrop-item">
+          <span>Airdrop Score:</span>
+          <span class="airdrop-score">${userairdrop.score} Score</span>
+        </div>
+        <button class="withdraw-btn" onclick="withdraw()">Withdraw🔒</button>
+
+
+
+
+
+
+      `;
+    }
+
+
+    // Ինիցիալիզացիա
+    function initApp() {
+      loadState();
+      setupTabs();
+      setupCloseButton();
+      renderTasks();
+      renderLeaderboard();
+      renderProfile(); // Փոխված է renderFriends()-ից
+      updateScore();
+    }
+    
+
+    // Մնացած կոդը մնում է նույնը...
+
+    // Daily Reward համակարգ
+    let lastClaimTime = localStorage.getItem('lastClaimTime') || 0;
+    let rewardInterval;
+
+    // Daily Reward-ի ցուցադրում
+    function renderDailyReward() {
+      const now = Date.now();
+      const timeLeft = 86400000 - (now - lastClaimTime);
+      const claimBtn = document.getElementById('claimRewardBtn');
+      const timerEl = document.getElementById('rewardTimer');
+
+      if (timeLeft > 0) {
+        claimBtn.disabled = true;
+        updateTimerDisplay(timeLeft);
+        startTimer();
+      } else {
+        claimBtn.disabled = false;
+        timerEl.textContent = "available now";
+      }
+    }
+
+    // Թայմերի ցուցադրում
+    function updateTimerDisplay(ms) {
+      const hours = Math.floor(ms / 3600000);
+      const minutes = Math.floor((ms % 3600000) / 60000);
+      const seconds = Math.floor((ms % 60000) / 1000);
+      
+      document.getElementById('rewardTimer').textContent = 
+        `Next reward in: ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    // Թայմերի սկսում
+    function startTimer() {
+      clearInterval(rewardInterval);
+      rewardInterval = setInterval(() => {
+        const timeLeft = 86400000 - (Date.now() - lastClaimTime);
+        if (timeLeft <= 0) {
+          renderDailyReward();
+          clearInterval(rewardInterval);
+        } else {
+          updateTimerDisplay(timeLeft);
+        }
+      }, 1000);
+    }
+
+    // Claim-ի մշակում
+    function handleDailyClaim() {
+      lastClaimTime = Date.now();
+      localStorage.setItem('lastClaimTime', lastClaimTime);
+      
+      userScore += 50;
+      updateScore();
+      renderDailyReward();
+      alert('🎉 Successfully claimed 50 Score!');
+    }
+
+    // Ինիցիալիզացիա
+    function initApp() {
+      loadState();
+      setupTabs();
+      setupCloseButton();
+      renderTasks();
+      renderDailyReward(); // Փոխված է
+      renderProfile();
+      updateScore();
+    }
+
+    let miningData = {
+  lastMiningDate: localStorage.getItem('lastMiningDate') || new Date().toDateString(),
+  remainingClicks: localStorage.getItem('remainingClicks') || 10000,
+  totalClicks: localStorage.getItem('totalClicks') || 0,
+  lastBoostTime: localStorage.getItem('lastBoostTime') || 0,
+  isBoostActive: false
+};
+
+function updateMiningUI() {
+  document.getElementById('clicksCounter').textContent = `${(-miningData.remainingClicks).toLocaleString()}`;
+  const progress = ((10000 - miningData.remainingClicks) / 100) + '%';
+  document.getElementById('progress').style.width = progress;
+  updateBoostButton();
+}
+
+function handleMiningClick() {
+  if (miningData.remainingClicks <= 0) {
+    alert("No more clicks available");
+    return;
+  }
+
+  let scoreIncrease = miningData.isBoostActive ? 3 : 0.01;
+  userScore += scoreIncrease;
+  updateScore();
+  
+  miningData.remainingClicks--;
+  miningData.totalClicks++;
+  localStorage.setItem('remainingClicks', miningData.remainingClicks);
+  localStorage.setItem('totalClicks', miningData.totalClicks);
+  
+  updateMiningUI();
+}
+
+function checkDailyReset() {
+  const currentDate = new Date().toDateString();
+  if (currentDate !== miningData.lastMiningDate) {
+    miningData.remainingClicks = 10000;
+    miningData.lastMiningDate = currentDate;
+    localStorage.setItem('remainingClicks', miningData.remainingClicks);
+    localStorage.setItem('lastMiningDate', currentDate);
+  }
+}
+
+function activateBoost() {
+  const now = Date.now();
+  const lastBoost = parseInt(localStorage.getItem('lastBoostTime')) || 0;
+  if (now - lastBoost < 12 * 60 * 60 * 1000) {
+    alert("Boost will be available in " + Math.ceil((12 * 60 * 60 * 1000 - (now - lastBoost)) / 3600000) + " hours");
+    return;
+  }
+
+  miningData.isBoostActive = true;
+  localStorage.setItem('lastBoostTime', now);
+  setTimeout(() => {
+    miningData.isBoostActive = false;
+    updateBoostButton();
+  }, 30000);
+  updateBoostButton();
+}
+
+function updateBoostButton() {
+  const now = Date.now();
+  const lastBoost = parseInt(localStorage.getItem('lastBoostTime')) || 0;
+  const boostButton = document.getElementById('boostButton');
+
+  if (now - lastBoost >= 12 * 60 * 60 * 1000) {
+    boostButton.disabled = false;
+  } else {
+    boostButton.disabled = true;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('miningArea').addEventListener('click', handleMiningClick);
+  document.getElementById('boostButton').addEventListener('click', activateBoost);
+  initMining();
+});
+
+function initMining() {
+  checkDailyReset();
+  updateMiningUI();
+  setInterval(checkDailyReset, 60000);
+}
+
+    
+  </script>
+</body>
+</html>
