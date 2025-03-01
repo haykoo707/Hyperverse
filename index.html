@@ -146,7 +146,7 @@
       color: #fff;
     }
     .start-btn {
-  color: #000;
+  color: #b50606;
   border-radius: 12px; 
   background: #f09433;
   background : -moz-linear-gradient(45deg, #5dc9e7 0%, #22c5f2 25%, #20cfff 50%, #22c5f2 75%, #5dc9e7 100%);
@@ -313,7 +313,7 @@
       font-weight: bold;
       cursor: pointer;
       margin-top: 20px;
-      background: #30c8ff;
+      background: #00bbff;
     }
     /* Mining տաբի ոճեր */
     .mining-container {
@@ -384,7 +384,7 @@
       background: #00bbff;
 }
 #boostButton {
-    background-color: #ffcc00;
+    background-color: #30c8ff;
     border: none;
     color: black;
     padding: 10px 20px;
@@ -405,7 +405,8 @@
     
   }
   #boostButton:disabled {
-    background-color: #ccc;
+    background-color: #0d5a76;
+    color: #ffffff;
     cursor: not-allowed;
     margin: 20px auto;
       cursor: pointer;
@@ -430,6 +431,22 @@
       top: -400px;
 
   }
+  /* Նոր ավելացված ոճեր Airdrop-ի համար */
+  .airdrop-container {
+      text-align: center;
+      padding: 20px;
+    }
+    .total-score {
+      font-size: 28px;
+      color: #22c5f2;
+      margin: 30px 0;
+    }
+    .h1{
+
+      text-align: center;
+      position: absolute;
+      left: 50;
+    }
   </style>
 </head>
 
@@ -438,13 +455,13 @@
     <!-- Վերևի տող -->
     <div class="top-bar">
       <div class="title">HyperVerse🪐</div>
-      <div class="score">Your Score: <span id="userScore">0</span></div>
+      <div class="score">🌟<span id="userScore">0</span></div>
     </div>
     <!-- Tabs բաժին -->
     <div class="tabs">
-      <button class="tab-button active" data-tab="home">Home 🏠 </button>
+      <button class="tab-button active" data-tab="home">Tasks 📋 </button>
       <button class="tab-button" data-tab="daily-reward">Reward🎁</button>
-      <button class="tab-button" data-tab="mine">Mining⛏️</button>
+      <button class="tab-button" data-tab="mine">Earn⛏️</button>
       <button class="tab-button" data-tab="profile">Profile👤</button>
       <button class="tab-button" data-tab="airdrop">Airdrop💎</button>
 
@@ -493,12 +510,12 @@
       <div id="mine" class="tab-content">
         <div class="mining-container">
           <div class="click-counter">
-tap to earn
              <span id="clicksCounter"></span>
           </div>
             <div class="progress" id="progress"></div>
           </div>
-          <button id="boostButton">Activate Boost ⚡</button>
+          <h5></h5>
+          <button id="boostButton">Boost 🚀 </button>
 
           <div class="mining-area" id="miningArea">
             <br>
@@ -508,13 +525,9 @@ tap to earn
         </div>
       </div>
     </div>
-    <div id="airdrop" class="tab-content">
-      <div class="airdrop-section">
-        <div class="airdrop-info" id="airdropInfo"></div>
-      </div>
-    </div>
-  </div>
-</div>
+
+
+
   <script>
     // Օգտատիրոջ միավորները (հեռելով սկզբնական արժեքը localStorage-ից, եթե կան)
     let userScore = 0;
@@ -767,7 +780,7 @@ tap to earn
       profileInfo.innerHTML = `
         <h2>Profile👤</h2>
         <div class="profile-item">
-          <span>General Score:</span>
+          <span>Airdrop Score:</span>
           <span class="profile-score">${userProfile.score} Score</span>
         </div>
         <button class="withdraw-btn" onclick="withdraw()">Withdraw🔒</button>
@@ -882,7 +895,6 @@ tap to earn
       userScore += 50;
       updateScore();
       renderDailyReward();
-      alert('🎉 Successfully claimed 50 Score!');
     }
 
     // Ինիցիալիզացիա
@@ -979,8 +991,7 @@ function initMining() {
   updateMiningUI();
   setInterval(checkDailyReset, 60000);
 }
-
-    
+  
   </script>
 </body>
 </html>
