@@ -66,7 +66,7 @@
       background: none;
       border: none;
       color: #ffffff;
-      font-size: 11px;
+      font-size: 9px;
       cursor: pointer;
     }
     .tab-button.active {
@@ -334,8 +334,8 @@
     .mining-area {
       width: 200px;
       height: 200px;
-      background: #494949;
-      border: 2px solid #686868;
+      background: #000000;
+      border: 2px solid #2e2e2e;
       border-radius: 100px;
       margin: 20px auto;
       cursor: pointer;
@@ -452,7 +452,7 @@
         .loader {
             width: 50px;
             height: 50px;
-            border: 5px solid white;
+            border: 5px solid rgb(156, 156, 156);
             border-top: 5px solid #22c5f2;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -494,6 +494,15 @@
     justify-content: center;
     align-items: center;
 }
+ul{
+  color: white;
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    font-size: 18px;
+
+}
+
   </style>
 </head>
 
@@ -506,11 +515,11 @@
     </div>
     <!-- Tabs բաժին -->
     <div class="tabs">
-      <button class="tab-button active" data-tab="home">Tasks 📋 </button>
+      <button class="tab-button active" data-tab="home">Tasks📋 </button>
       <button class="tab-button" data-tab="daily-reward">Reward🎁</button>
       <button class="tab-button" data-tab="mine">Earn⛏️</button>
       <button class="tab-button" data-tab="profile">Profile👤</button>
-      <button class="tab-button" data-tab="airdrop">Airdrop💎</button>
+      <button class="tab-button" data-tab="Roadmap">Roadmap🗺️</button>
 
       
     </div>
@@ -544,7 +553,7 @@
       </p>
     </div>
   </div>
-      <!-- Friends Tab -->
+      <!-- profile Tab -->
       <div id="profile" class="tab-content">
         <div class="profile-section">
           <div class="profile-info" id="profileInfo"></div>
@@ -572,7 +581,25 @@
         </div>
       </div>
     </div>
+    
+    <div id="Roadmap" class="tab-content">
+      <div class="profile-section">
+        <div class="profile-info" id="profileInfo"></div>
+<ul>
+  <li>𝗚𝗮𝘁𝗵𝗲𝗿 𝗮 𝗰𝗼𝗺𝗺𝘂𝗻𝗶𝘁𝘆📣
+  </li>
+  <li>𝗕𝗲𝗰𝗼𝗺𝗲 𝗮 𝗳𝗮𝗺𝗼𝘂𝘀 𝗽𝗿𝗼𝗷𝗲𝗰𝘁💡
+  </li>
+  <li>𝗧𝗚𝗘📊</li>
+  <li>𝗟𝗶𝘀𝘁𝗶𝗻𝗴 𝗗𝗘𝗫🚀
+  </li>
+  <li>𝗟𝗶𝘀𝘁𝗶𝗻𝗴 𝗖𝗘𝗫🚀
+  </li>
 
+</ul>      </div>
+    </div>
+  </div>
+</div>
     <div class="loading-screen" id="loadingScreen">
       <div class="loader"></div>
       <h3>𝗟𝗼𝗮𝗱𝗶𝗻𝗴...
