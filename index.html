@@ -2,9 +2,31 @@
 <html lang="hy">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <title>HyperVerse</title>
   <style>
+    .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh; /* Համոզվում ենք, որ լրիվ էկրանը ծածկվի */
+}
+@media (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+}
+
+@media (min-width: 601px) {
+  .container {
+    padding: 20px;
+  }
+}
+
     /* Հիմնական զրոյացում և ընդհանուր ոճեր */
     * {
       margin: 0;
@@ -315,52 +337,10 @@
       margin-top: 20px;
       background: #00bbff;
     }
-    /* Mining տաբի ոճեր */
-    .mining-container {
-      text-align: center;
-      padding: 20px;
-      top: -600px;
+  
+    
 
-    }
-    
-    .click-counter {
-      font-size: 24px;
-      color: #000000;
-      margin: 20px 0;
-      position: relative;
-      top: -600px;
-    }
-    
-    .mining-area {
-      width: 200px;
-      height: 200px;
-      background: #000000;
-      border: 2px solid #2e2e2e;
-      border-radius: 100px;
-      margin: 20px auto;
-      cursor: pointer;
-      transition: transform 0.5s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      top: -780px;
-      box-shadow: 0 0 88px #30c8ff
-      
-
-    }
-    
-    .mining-area:active {
-      transform: scale(0.95);
-      background: #000000;
-      position: relative;
-      top: -780px;
-    }
-    .click-counter {
-      font-size: 24px;
-      color: #000000;
-      margin: 20px 0;
-    }
+   
 .sp-btn{
        width: 100%;
       padding: 12px;
@@ -383,54 +363,7 @@
       margin-top: 20px;
       background: #00bbff;
 }
-#boostButton {
-    background-color: #30c8ff;
-    border: none;
-    color: black;
-    padding: 10px 20px;
-    text-align: center;
-    display: inline-block;
-    font-size: 16px;
-    margin: 10px;
-    cursor: pointer;
-    border-radius: 12px;
-      margin: 20px auto;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      top: -400px;
 
-    
-  }
-  #boostButton:disabled {
-    background-color: #0d5a76;
-    color: #ffffff;
-    cursor: not-allowed;
-    margin: 20px auto;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      top: -400px;
-
-  }
-  #progress {
-    height: 20px;
-    background-color: rgb(0, 0, 0);
-    width: 0%;
-    transition: width 0.5s;
-    margin: 20px auto;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      top: -400px;
-
-  }
   /* Նոր ավելացված ոճեր Airdrop-ի համար */
   .airdrop-container {
       text-align: center;
@@ -504,9 +437,41 @@ ul{
 }
 
   </style>
+  
 </head>
 
 <body>
+  <script>
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl: 'https://you.app',
+        buttonRootId: 'connect'
+    });
+    <div id="connect"></div>
+
+    
+</script>   
+
+<script>
+  tonConnectUI.uiOptions = {
+        actionsConfiguration: {
+            returnStrategy: 'none'
+        }
+    };
+    tonConnectUI.uiOptions = {
+      twaReturnUrl: 'https://t.me/hyperrverse_bot'
+  };
+  async function connectToWallet() {
+      const connectedWallet = await tonConnectUI.connectWallet();
+      // Do something with connectedWallet if needed
+      console.log(connectedWallet);
+  }
+
+  // Call the function
+  connectToWallet().catch(error => {
+      console.error("Error connecting to wallet:", error);
+  });
+</script>
+
   <div class="app-container">
     <!-- Վերևի տող -->
     <div class="top-bar">
@@ -517,7 +482,6 @@ ul{
     <div class="tabs">
       <button class="tab-button active" data-tab="home">Tasks📋 </button>
       <button class="tab-button" data-tab="daily-reward">Reward🎁</button>
-      <button class="tab-button" data-tab="mine">Earn⛏️</button>
       <button class="tab-button" data-tab="profile">Profile👤</button>
       <button class="tab-button" data-tab="Roadmap">Roadmap🗺️</button>
 
@@ -557,30 +521,19 @@ ul{
       <div id="profile" class="tab-content">
         <div class="profile-section">
           <div class="profile-info" id="profileInfo"></div>
+          <div id="connect" style="cursor: pointer;
+          margin-top: 20px;  width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold; "></div>
         </div>
       </div>
     </div>
   </div>
   
-      <!-- Mining տաբի բովանդակություն -->
-      <div id="mine" class="tab-content">
-        <div class="mining-container">
-          <div class="click-counter">
-             <span id="clicksCounter"></span>
-          </div>
-            <div class="progress" id="progress"></div>
-          </div>
-          <h5></h5>
-          <button id="boostButton">Boost 🚀 </button>
-
-          <div class="mining-area" id="miningArea">
-            <br>
-            
-           <br>
-          </div>
-        </div>
-      </div>
-    </div>
+  
     
     <div id="Roadmap" class="tab-content">
       <div class="profile-section">
@@ -617,6 +570,13 @@ ul{
   </script>
 
   <script>
+  
+  const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://you.app/tonconnect-manifest.json',
+            buttonRootId: 'connect'
+        });
+
+
     // Օգտատիրոջ միավորները (հեռելով սկզբնական արժեքը localStorage-ից, եթե կան)
     let userScore = 0;
     // Փոխարինել tasks-ի նախնական արժեքը՝ սահմանելով let, որպեսզի կարողանանք վերագրել, եթե անհրաժեշտ լինի
@@ -874,7 +834,9 @@ ul{
         <button class="withdraw-btn" onclick="withdraw()">Withdraw🔒</button>
 <button class="tg-btn" onclick="window.open('https://t.me/HyperrVersee', '_blank')">Telegram Channel📢</button>
         <h6>For more Info subscribe Telegram channel</h6>
-        <button class="sp-btn" onclick="window.open('payment.html', '_blank')">Support the project💵</button>
+<button class="sp-btn" onclick="window.location.href='ton://transfer/UQBfrU75WGhBLnRpBs1ImWE5sPdxKsFMBgogpD578JxXyDbK?amount=1000000'">
+    Support the project💵
+</button>
                 <h6>Support the project (SOL) (TON)</h6>
                         <button class="hpsup-btn" onclick="window.open('LINK', '_blank')">HyperVerse Support📝</button>
                                         <h6>HyperVerse Support (Telegram)</h6>
@@ -996,89 +958,7 @@ ul{
       updateScore();
     }
 
-    let miningData = {
-  lastMiningDate: localStorage.getItem('lastMiningDate') || new Date().toDateString(),
-  remainingClicks: localStorage.getItem('remainingClicks') || 10000,
-  totalClicks: localStorage.getItem('totalClicks') || 0,
-  lastBoostTime: localStorage.getItem('lastBoostTime') || 0,
-  isBoostActive: false
-};
-
-function updateMiningUI() {
-  document.getElementById('clicksCounter').textContent = `${(-miningData.remainingClicks).toLocaleString()}`;
-  const progress = ((10000 - miningData.remainingClicks) / 100) + '%';
-  document.getElementById('progress').style.width = progress;
-  updateBoostButton();
-}
-
-function handleMiningClick() {
-  if (miningData.remainingClicks <= 0) {
-    alert("No more clicks available");
-    return;
-  }
-
-  let scoreIncrease = miningData.isBoostActive ? 3 : 0.01;
-  userScore += scoreIncrease;
-  updateScore();
-  
-  miningData.remainingClicks--;
-  miningData.totalClicks++;
-  localStorage.setItem('remainingClicks', miningData.remainingClicks);
-  localStorage.setItem('totalClicks', miningData.totalClicks);
-  
-  updateMiningUI();
-}
-
-function checkDailyReset() {
-  const currentDate = new Date().toDateString();
-  if (currentDate !== miningData.lastMiningDate) {
-    miningData.remainingClicks = 10000;
-    miningData.lastMiningDate = currentDate;
-    localStorage.setItem('remainingClicks', miningData.remainingClicks);
-    localStorage.setItem('lastMiningDate', currentDate);
-  }
-}
-
-function activateBoost() {
-  const now = Date.now();
-  const lastBoost = parseInt(localStorage.getItem('lastBoostTime')) || 0;
-  if (now - lastBoost < 12 * 60 * 60 * 1000) {
-    alert("Boost will be available in " + Math.ceil((12 * 60 * 60 * 1000 - (now - lastBoost)) / 3600000) + " hours");
-    return;
-  }
-
-  miningData.isBoostActive = true;
-  localStorage.setItem('lastBoostTime', now);
-  setTimeout(() => {
-    miningData.isBoostActive = false;
-    updateBoostButton();
-  }, 30000);
-  updateBoostButton();
-}
-
-function updateBoostButton() {
-  const now = Date.now();
-  const lastBoost = parseInt(localStorage.getItem('lastBoostTime')) || 0;
-  const boostButton = document.getElementById('boostButton');
-
-  if (now - lastBoost >= 12 * 60 * 60 * 1000) {
-    boostButton.disabled = false;
-  } else {
-    boostButton.disabled = true;
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('miningArea').addEventListener('click', handleMiningClick);
-  document.getElementById('boostButton').addEventListener('click', activateBoost);
-  initMining();
-});
-
-function initMining() {
-  checkDailyReset();
-  updateMiningUI();
-  setInterval(checkDailyReset, 60000);
-}
+   
   
   </script>
 </body>
