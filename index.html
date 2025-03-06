@@ -26,9 +26,12 @@
     }
     body {
       font-family: sans-serif;
-      background-color: #000;
+      background-color: #281a1a;
       color: #fff;
       user-select: none;
+      margin: 0;
+    overflow: hidden;
+    background-color: black;
     }
     .app-container {
       max-width: 480px;
@@ -45,7 +48,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px;
-      background: #111;
+      background: #000000;
       border-bottom: 1px solid #333;
     }
     .top-bar button.close-btn {
@@ -84,15 +87,28 @@
     }
     .tab-button.active {
       color: #22c5f2;
-      border-bottom: 3px solid #22c5f2;
     }
     /* Բովանդակության կոնտեյներ */
     .content {
       flex: 1;
       overflow-y: auto;
-      background: #000;
+     background-color: #000;
       padding: 11px;
     }
+    body {
+    margin: 0;
+    overflow: hidden;
+    background-color: black;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
     .tab-content {
       display: none;
     }
@@ -110,7 +126,7 @@
       gap: 10px;
     }
     .task-item {
-      background: #111;
+      background: #2b2b2b;
       border: 1px solid #333;
       border-radius: 8px;
       padding: 10px;
@@ -161,25 +177,20 @@
     .start-btn {
   color: #b50606;
   border-radius: 12px; 
-  background: #f09433;
-  background : -moz-linear-gradient(45deg, #5dc9e7 0%, #22c5f2 25%, #20cfff 50%, #22c5f2 75%, #5dc9e7 100%);
-  background : -webkit-linear-gradient(45deg, #5dc9e7 0%,#22c5f2 25%,#20cfff 50%,#22c5f2 75%,#5dc9e7 100%);
-  background : linear-gradient(45deg, #5dc9e7 0%,#22c5f2 25%,#20cfff 50%,#22c5f2 75%,#5dc9e7 100%);
+  background: #22c5f2;
+ 
 }
 
     .waiting-btn {
       background: #555;
       cursor: default;
-      border-radius: 8px;
+      border-radius: 12px;
 
     }
     .claim-btn {
-      background: #f59e0b;
-      border-radius: 8px;
-      background : #f09433;
-      background : -moz-linear-gradient(45deg, #5dc9e7 0%, #22c5f2 25%, #20cfff 50%, #22c5f2 75%, #5dc9e7 100%);
-  background : -webkit-linear-gradient(45deg, #5dc9e7 0%,#22c5f2 25%,#20cfff 50%,#22c5f2 75%,#5dc9e7 100%);
-  background : linear-gradient(45deg, #5dc9e7 0%,#22c5f2 25%,#20cfff 50%,#22c5f2 75%,#5dc9e7 100%);
+      background: #22c5f2;
+      border-radius: 12px;
+      
 
 
     }
@@ -376,10 +387,10 @@
         .loader {
             width: 50px;
             height: 50px;
-            border: 5px solid rgb(156, 156, 156);
-            border-top: 5px solid #22c5f2;
+            border: 5px solid rgb(100, 121, 124);
+            border-top: 5px solid #00c8ff;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -396,8 +407,13 @@
             justify-content: center;
             align-items: center;
             transition: opacity 0.5s ease-out;
-            background-image: url('3d-render-space-galaxy-cloud-cosmos-realistic-illustration-background_52369-183.avif');
+            background-image: url('1000_F_262036587_0LSZgmFs9YXDQuR0J7w1rJF1Te7qXpHN.jpg');
+            background-attachment: fixed;
+            background-position: 86% 100%;
+            
+            
         }
+        
         h3{    color: white;
     position: absolute;
     top: 88%;
@@ -425,8 +441,66 @@ ul{
     left: 15%;
     font-size: 18px;
 
+} .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #000000;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.9s;
+        }
+
+        .tab-button.active {
+            background-color: #000000;
+            color: rgb(255, 255, 255);
+        }
+
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .tab-button {
+    position: relative;
+    padding: 10px 20px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 10px;
+    transition: color 0.3s;
 }
 
+.tab-button::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 3px;
+    background-color: #22c5f2;
+    transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
+}
+
+.tab-button.active {
+    color: #22c5f2;
+}
+
+.tab-button.active::after {
+    width: 100%;
+    left: 0;}
   </style>
   
 </head>
@@ -434,6 +508,7 @@ ul{
 <body>
   
 </script>
+<canvas id="starCanvas"></canvas>
 
   <div class="app-container">
     <!-- Վերևի տող -->
@@ -448,7 +523,7 @@ ul{
       <button class="tab-button" data-tab="profile">Profile👤</button>
       <button class="tab-button" data-tab="Roadmap">Roadmap🗺️</button>
 
-      
+
     </div>
     <!-- Բովանդակության կոնտեյներ -->
     <div class="content">
@@ -489,8 +564,7 @@ ul{
       </div>
     </div>
   </div>
-  
-  
+
     
     <div id="Roadmap" class="tab-content">
       <div class="profile-section">
@@ -787,7 +861,7 @@ ul{
         </div>
         <button class="withdraw-btn" onclick="withdraw()">Withdraw🔒</button>
 <button class="tg-btn" onclick="window.open('https://t.me/HyperrVersee', '_blank')">Telegram Channel📢</button>
-<button class="sp-btn" onclick="window.open('ton://transfer/UQBfrU75WGhBLnRpBs1ImWE5sPdxKsFMBgogpD578JxXyDbK?amount=1000000&text=Աջակցիր%20նախագծին!', '_blank')">
+<button class="sp-btn" onclick="window.open('ton://transfer/UQBfrU75WGhBLnRpBs1ImWE5sPdxKsFMBgogpD578JxXyDbK?&text=Support project', '_blank')">
     Support the project💵
 </button>
 
@@ -910,8 +984,77 @@ ul{
       updateScore();
     }
 
-   
+    document.addEventListener("DOMContentLoaded", () => {
+            const buttons = document.querySelectorAll(".tab-button");
+            const contents = document.querySelectorAll(".tab-content");
+
+            buttons.forEach(button => {
+                button.addEventListener("click", () => {
+                    const targetTab = button.getAttribute("data-tab");
+
+                    // Remove active class from previous tab & button
+                    document.querySelector(".tab-button.active").classList.remove("active");
+                    document.querySelector(".tab-content.active").classList.remove("active");
+
+                    // Add fade-out effect
+                    setTimeout(() => {
+                        contents.forEach(content => content.style.display = "none");
+
+                        // Activate the new tab
+                        document.getElementById(targetTab).style.display = "block";
+                        setTimeout(() => document.getElementById(targetTab).classList.add("active"), 10);
+                    }, 400);
+
+                    // Add active class to the clicked button
+                    button.classList.add("active");
+                });
+            });
+        });
   
+        const canvas = document.getElementById("starCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const stars = [];
+const numStars = 100;
+
+for (let i = 0; i < numStars; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2,
+        speed: Math.random() * 0.5 + 0.2,
+    });
+}
+
+function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "white";
+
+    stars.forEach((star) => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        star.y += star.speed;
+        if (star.y > canvas.height) {
+            star.y = 0;
+            star.x = Math.random() * canvas.width;
+        }
+    });
+
+    requestAnimationFrame(drawStars);
+}
+
+drawStars();
+
+window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
   </script>
   
 </body>
